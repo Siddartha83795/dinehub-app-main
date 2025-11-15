@@ -35,11 +35,10 @@ export default function LoginPage() {
 
     const clientForm = useForm<ClientFormValues>({
         resolver: zodResolver(clientSchema),
-        mode: 'onTouched',
+        mode: "onTouched",
         defaultValues: {
-            email: '',
-            phone: '',
-        },
+            email: "",
+            phone:   "" },
     });
 
     const staffForm = useForm<StaffFormValues>({
@@ -72,7 +71,7 @@ export default function LoginPage() {
             router.push(`/staff/dashboard/${selectedOutlet}`);
         } else {
             toast({
-                variant: 'destructive',
+                variant: "destructive",
                 title: "Login Failed",
                 description: "Invalid username or password.",
             });
