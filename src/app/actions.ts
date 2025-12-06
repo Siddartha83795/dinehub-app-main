@@ -1,9 +1,14 @@
-'use server';
-
-import { predictWaitTime as predictWaitTimeFlow } from '@/ai/flows/intelligent-wait-time-prediction';
+// 'use server'; // Server actions are not supported in static export
+// import { predictWaitTime as predictWaitTimeFlow } from '@/ai/flows/intelligent-wait-time-prediction';
 import type { PredictWaitTimeInput } from '@/ai/flows/intelligent-wait-time-prediction';
 
 export async function predictWaitTime(input: PredictWaitTimeInput) {
+  // Static export mock
+  console.log("Mocking AI prediction for static export:", input);
+  return { success: true, data: 15 }; // Default 15 min wait
+
+  /* 
+  // Original Server Action Code
   try {
     const result = await predictWaitTimeFlow(input);
     return { success: true, data: result };
@@ -11,4 +16,5 @@ export async function predictWaitTime(input: PredictWaitTimeInput) {
     console.error("AI prediction failed:", error);
     return { success: false, error: "Failed to get an AI prediction."};
   }
+  */
 }
