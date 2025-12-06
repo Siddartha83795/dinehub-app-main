@@ -14,9 +14,9 @@ export default function OrdersPage() {
 
   if (clientOrders.length === 0) {
     return (
-       <div className="container py-12 text-center">
+      <div className="container py-12 text-center">
         <h1 className="text-3xl font-bold font-headline">You have no orders yet</h1>
-        <p className="mt-4 text-muted-foreground">Looks like you haven't placed an order.</p>
+        <p className="mt-4 text-muted-foreground">Looks like you haven&apos;t placed an order.</p>
         <Button asChild className="mt-8">
           <Link href="/outlets">
             Order Now
@@ -37,36 +37,36 @@ export default function OrdersPage() {
         </p>
       </div>
 
-       <Tabs defaultValue="active" className="w-full">
+      <Tabs defaultValue="active" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="active">Active Orders</TabsTrigger>
           <TabsTrigger value="past">Past Orders</TabsTrigger>
         </TabsList>
         <TabsContent value="active">
-            {activeOrders.length > 0 ? (
-                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-                    {activeOrders.map(order => (
-                        <OrderCard key={order.id} order={order} />
-                    ))}
-                </div>
-            ) : (
-                <div className="text-center py-16">
-                    <p className="text-muted-foreground">You have no active orders.</p>
-                </div>
-            )}
+          {activeOrders.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+              {activeOrders.map(order => (
+                <OrderCard key={order.id} order={order} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-16">
+              <p className="text-muted-foreground">You have no active orders.</p>
+            </div>
+          )}
         </TabsContent>
         <TabsContent value="past">
-            {pastOrders.length > 0 ? (
-                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
-                    {pastOrders.map(order => (
-                        <OrderCard key={order.id} order={order} />
-                    ))}
-                </div>
-            ) : (
-                <div className="text-center py-16">
-                    <p className="text-muted-foreground">You have no past orders.</p>
-                </div>
-            )}
+          {pastOrders.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+              {pastOrders.map(order => (
+                <OrderCard key={order.id} order={order} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-16">
+              <p className="text-muted-foreground">You have no past orders.</p>
+            </div>
+          )}
         </TabsContent>
       </Tabs>
     </div>

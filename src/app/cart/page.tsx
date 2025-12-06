@@ -31,13 +31,13 @@ export default function CartPage() {
     };
     router.push(`/order-confirmation?token=${mockOrderData.token}&eta=${mockOrderData.eta}`);
   };
-  
+
   const handlePredictWaitTime = async () => {
     if (!outletId || cart.length === 0) return;
     setIsPredicting(true);
     setPredictionError(null);
     setPrediction(null);
-    
+
     const input = {
       outletId,
       itemIds: cart.flatMap(item => Array(item.quantity).fill(item.menuItem.id)),
@@ -46,12 +46,12 @@ export default function CartPage() {
     };
 
     const result = await predictWaitTime(input);
-    if(result.success && result.data) {
+    if (result.success && result.data) {
       setPrediction(result.data);
     } else {
       setPredictionError(result.error || 'An unknown error occurred.');
     }
-    
+
     setIsPredicting(false);
   };
 
@@ -60,7 +60,7 @@ export default function CartPage() {
     return (
       <div className="container py-12 text-center">
         <h1 className="text-3xl font-bold font-headline">Your Cart is Empty</h1>
-        <p className="mt-4 text-muted-foreground">Looks like you haven't added anything to your cart yet.</p>
+        <p className="mt-4 text-muted-foreground">Looks like you haven&apos;t added anything to your cart yet.</p>
         <Button asChild className="mt-8">
           <Link href="/outlets">
             <ArrowLeft className="mr-2 h-4 w-4" />
@@ -139,18 +139,18 @@ export default function CartPage() {
                   Predict Wait Time with AI
                 </Button>
                 {prediction && (
-                    <Alert>
-                        <Info className="h-4 w-4" />
-                        <AlertTitle>AI Prediction: ~{prediction.estimatedWaitTime} minutes</AlertTitle>
-                        <AlertDescription className="text-xs">{prediction.reasoning}</AlertDescription>
-                    </Alert>
+                  <Alert>
+                    <Info className="h-4 w-4" />
+                    <AlertTitle>AI Prediction: ~{prediction.estimatedWaitTime} minutes</AlertTitle>
+                    <AlertDescription className="text-xs">{prediction.reasoning}</AlertDescription>
+                  </Alert>
                 )}
                 {predictionError && (
-                    <Alert variant="destructive">
-                        <Info className="h-4 w-4" />
-                        <AlertTitle>Prediction Failed</AlertTitle>
-                        <AlertDescription className="text-xs">{predictionError}</AlertDescription>
-                    </Alert>
+                  <Alert variant="destructive">
+                    <Info className="h-4 w-4" />
+                    <AlertTitle>Prediction Failed</AlertTitle>
+                    <AlertDescription className="text-xs">{predictionError}</AlertDescription>
+                  </Alert>
                 )}
               </div>
             </CardContent>

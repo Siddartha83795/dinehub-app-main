@@ -5,7 +5,13 @@ import type { PredictWaitTimeInput } from '@/ai/flows/intelligent-wait-time-pred
 export async function predictWaitTime(input: PredictWaitTimeInput) {
   // Static export mock
   console.log("Mocking AI prediction for static export:", input);
-  return { success: true, data: 15 }; // Default 15 min wait
+  return {
+    success: true,
+    data: {
+      estimatedWaitTime: 15,
+      reasoning: "Estimated based on historical data (Mock for Static Export)"
+    }
+  }; // Default 15 min wait
 
   /* 
   // Original Server Action Code

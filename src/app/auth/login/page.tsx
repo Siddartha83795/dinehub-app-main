@@ -29,54 +29,55 @@ const staffSchema = z.object({
 type StaffFormValues = z.infer<typeof staffSchema>;
 
 export default function LoginPage() {
-    const { toast } = useToast();
-    const router = useRouter();
-    const [selectedOutlet, setSelectedOutlet] = useState(outlets[0].id);
+  const { toast } = useToast();
+  const router = useRouter();
+  const [selectedOutlet, setSelectedOutlet] = useState(outlets[0].id);
 
-    const clientForm = useForm<ClientFormValues>({
-        resolver: zodResolver(clientSchema),
-        mode: "onTouched",
-        defaultValues: {
-            email: "",
-            phone:   "" },
+  const clientForm = useForm<ClientFormValues>({
+    resolver: zodResolver(clientSchema),
+    mode: "onTouched",
+    defaultValues: {
+      email: "",
+      phone: ""
+    },
+  });
+
+  const staffForm = useForm<StaffFormValues>({
+    resolver: zodResolver(staffSchema),
+    defaultValues: {
+      username: 'admin',
+      password: 'admin123',
+    },
+  });
+
+  const onClientSubmit: SubmitHandler<ClientFormValues> = (data) => {
+    console.log("Client Login Data:", data);
+    localStorage.setItem('isLoggedIn', 'true');
+    localStorage.setItem('userRole', 'client');
+    toast({
+      title: "Client Login Successful",
+      description: "Welcome back!",
     });
+    router.push('/outlets');
+  };
 
-    const staffForm = useForm<StaffFormValues>({
-        resolver: zodResolver(staffSchema),
-        defaultValues: {
-            username: 'admin',
-            password: 'admin123',
-        },
-    });
-
-    const onClientSubmit: SubmitHandler<ClientFormValues> = (data) => {
-        console.log("Client Login Data:", data);
-        localStorage.setItem('isLoggedIn', 'true');
-        localStorage.setItem('userRole', 'client');
-        toast({
-            title: "Client Login Successful",
-            description: "Welcome back!",
-        });
-        router.push('/outlets');
-    };
-
-    const onStaffSubmit: SubmitHandler<StaffFormValues> = (data) => {
-        if (data.username === 'admin' && data.password === 'admin123') {
-            localStorage.setItem('isLoggedIn', 'true');
-            localStorage.setItem('userRole', 'staff');
-            toast({
-                title: "Staff Login Successful",
-                description: "Redirecting to dashboard...",
-            });
-            router.push(`/staff/dashboard/${selectedOutlet}`);
-        } else {
-            toast({
-                variant: "destructive",
-                title: "Login Failed",
-                description: "Invalid username or password.",
-            });
-        }
-    };
+  const onStaffSubmit: SubmitHandler<StaffFormValues> = (data) => {
+    if (data.username === 'admin' && data.password === 'admin123') {
+      localStorage.setItem('isLoggedIn', 'true');
+      localStorage.setItem('userRole', 'staff');
+      toast({
+        title: "Staff Login Successful",
+        description: "Redirecting to dashboard...",
+      });
+      router.push(`/staff/dashboard/${selectedOutlet}`);
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Login Failed",
+        description: "Invalid username or password.",
+      });
+    }
+  };
 
   return (
     <div className="container flex min-h-[calc(100vh-8rem)] items-center justify-center py-12">
@@ -124,7 +125,7 @@ export default function LoginPage() {
                             <Input type="tel" placeholder="+91XXXXXXXXXX" {...field} className="pl-10" />
                           </FormControl>
                         </div>
-                         <FormMessage />
+                        <FormMessage />
                       </FormItem>
                     )}
                   />
@@ -150,17 +151,17 @@ export default function LoginPage() {
                   <div className="space-y-2">
                     <Label htmlFor="outlet">Select Outlet</Label>
                     <div className="relative">
-                        <Building className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Select value={selectedOutlet} onValueChange={setSelectedOutlet}>
-                            <SelectTrigger className="pl-10">
-                                <SelectValue placeholder="Select an outlet" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {outlets.map(outlet => (
-                                    <SelectItem key={outlet.id} value={outlet.id}>{outlet.name}</SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+                      <Building className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Select value={selectedOutlet} onValueChange={setSelectedOutlet}>
+                        <SelectTrigger className="pl-10">
+                          <SelectValue placeholder="Select an outlet" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {outlets.map(outlet => (
+                            <SelectItem key={outlet.id} value={outlet.id}>{outlet.name}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                   <FormField
@@ -170,9 +171,9 @@ export default function LoginPage() {
                       <FormItem>
                         <FormLabel>Username</FormLabel>
                         <div className="relative">
-                           <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                           <FormControl>
-                            <Input placeholder="admin" {...field} className="pl-10"/>
+                          <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                          <FormControl>
+                            <Input placeholder="admin" {...field} className="pl-10" />
                           </FormControl>
                         </div>
                         <FormMessage />
@@ -186,18 +187,18 @@ export default function LoginPage() {
                       <FormItem>
                         <FormLabel>Password</FormLabel>
                         <div className="relative">
-                           <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                           <FormControl>
-                            <Input type="password" {...field} className="pl-10"/>
+                          <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                          <FormControl>
+                            <Input type="password" {...field} className="pl-10" />
                           </FormControl>
                         </div>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                   <p className="text-xs text-center text-muted-foreground pt-4">
-                        Login will redirect to the selected outlet's dashboard.
-                    </p>
+                  <p className="text-xs text-center text-muted-foreground pt-4">
+                    Login will redirect to the selected outlet&apos;s dashboard.
+                  </p>
                   <Button type="submit" className="w-full">
                     Login as Staff
                   </Button>
