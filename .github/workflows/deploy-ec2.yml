@@ -16,7 +16,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
-          command_timeout: 23m
+          command_timeout: 32m
           script: |
             # 1. FIX MEMORY: Auto-create Swap if missing (prevents crash on t2.micro)
             # Check if swap is active
