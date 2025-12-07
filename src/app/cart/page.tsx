@@ -46,10 +46,10 @@ export default function CartPage() {
     };
 
     const result = await predictWaitTime(input);
-    if (result.success && result.data) {
+    if (result.success) {
       setPrediction(result.data);
     } else {
-      setPredictionError(result.error || 'An unknown error occurred.');
+      setPredictionError(result.error);
     }
 
     setIsPredicting(false);

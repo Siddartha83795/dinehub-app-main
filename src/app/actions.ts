@@ -1,8 +1,8 @@
 // 'use server'; // Server actions are not supported in static export
 // import { predictWaitTime as predictWaitTimeFlow } from '@/ai/flows/intelligent-wait-time-prediction';
-import type { PredictWaitTimeInput } from '@/ai/flows/intelligent-wait-time-prediction';
+import type { PredictWaitTimeInput, PredictWaitTimeOutput } from '@/ai/flows/intelligent-wait-time-prediction';
 
-export async function predictWaitTime(input: PredictWaitTimeInput) {
+export async function predictWaitTime(input: PredictWaitTimeInput): Promise<{ success: true; data: PredictWaitTimeOutput } | { success: false; error: string }> {
   // Static export mock
   console.log("Mocking AI prediction for static export:", input);
   return {
