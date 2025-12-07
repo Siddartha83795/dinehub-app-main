@@ -1,0 +1,36 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          script: |
+            # Ensure target directory exists
+            mkdir -p ~/dinehub
+            cd ~/dinehub
+            
+            # Check if it's a git repo, clone if not (requires public repo or configured git auth on server)
+            if [ ! -d ".git" ]; then
+              git clone https://github.com/${{ github.repository }}.git .
+            else
+              git pull origin main
+            fi
+            
+            # Install dependencies and build
+            npm ci
+            npm run build
+            
+            # Start/Restart application
+            pm2 startOrRestart ecosystem.config.js
