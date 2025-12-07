@@ -10,47 +10,55 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Install SSH client
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y openssh-client
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          command_timeout: 40m
+          script: |
+            # 1. FIX MEMORY: Auto-create Swap if missing (prevents crash on t2.micro)
+            # Check if swap is active
+            if [ $(free | awk '/^Swap:/ {print $2}') -eq 0 ]; then
+              echo "Swap not found. Auto-creating 2GB Swap Memory..."
+              sudo fallocate -l 2G /swapfile
+              sudo chmod 600 /swapfile
+              sudo mkswap /swapfile
+              sudo swapon /swapfile
+              # Add to fstab if not present
+              if ! grep -q "/swapfile" /etc/fstab; then
+                echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+              fi
+              echo "Swap created successfully."
+            else
+               echo "Swap already exists."
+            fi
 
-      - name: Setup SSH keys
-        run: |
-          mkdir -p ~/.ssh
-          chmod 700 ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          echo "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
-          chmod 644 ~/.ssh/known_hosts
-
-      - name: Test SSH Connection
-        run: ssh -v -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} "echo 'Connection successful'"
-
-      - name: Deploy to EC2 instance
-        run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << 'EOF'
-          # Load NVM if available (optional, depending on server setup)
-          export NVM_DIR="$HOME/.nvm"
-          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-          
-          # Navigate to project
-          # Ensure the directory exists
-          mkdir -p ~/dinehub
-          cd ~/dinehub
-          
-          # Check if git initialized, clone if not
-          if [ ! -d ".git" ]; then
-            git clone https://github.com/${{ github.repository }}.git .
-          fi
-
-          # Pull latest code
-          git pull origin main
-          
-          # Install and Build
-          npm ci
-          npm run build
-          
-          # Start or Restart with PM2
-          pm2 startOrRestart ecosystem.config.js --env prod
-          EOF
+            # 2. Setup Environment
+            export NVM_DIR="$HOME/.nvm"
+            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+            
+            # 3. Deploy
+            mkdir -p ~/dinehub
+            cd ~/dinehub
+            
+            # Check if git initialized
+            if [ ! -d ".git" ]; then
+              echo "Cloning repository..."
+              git clone https://github.com/${{ github.repository }}.git .
+            else
+              echo "Pulling latest changes..."
+              git pull origin main
+            fi
+            
+            echo "Installing dependencies..."
+            npm ci
+            
+            echo "Building application..."
+            npm run build
+            
+            echo "Restarting PM2..."
+            pm2 startOrRestart ecosystem.config.js --env prod
+            
+            echo "Deployment Complete!"
