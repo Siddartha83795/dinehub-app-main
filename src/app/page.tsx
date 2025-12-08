@@ -39,7 +39,7 @@ export default function Home() {
             className="absolute -bottom-40 -right-40 h-96 w-96 rounded-full bg-accent/20 blur-3xl"
           />
           <h1 className="font-headline text-5xl font-bold tracking-tight md:text-7xl lg:text-8xl">
-            DineHub
+            Dine
           </h1>
           <p className="mt-4 max-w-2xl text-lg text-gray-300 md:text-xl">
             Effortless Ordering, Deliciously Delivered.
